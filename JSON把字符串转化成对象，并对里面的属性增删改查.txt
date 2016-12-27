@@ -16,4 +16,4 @@ someOBJ.age = 10
 6.查询属性
 使用Object.keys(obj)方法列出所有属性
 比如：Object.keys(someOBJ)
-返回一个所有属性的数组
+返回一个所有属性的数组asda
