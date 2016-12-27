@@ -1,0 +1,19 @@
+JSON把字符串转化成对象，并对里面的属性增删改查
+1.新建一个字符串
+someone = '{"name":"clegan"}'
+2.把字符串转化成对象,并赋值给一个变量
+JSON.parse(someone)
+someOBJ = JSON.parse(someone)
+3.增加属性
+直接obj.property = value就可以增加属性并赋值
+someOBJ.age = 10
+4.删除属性
+使用delete（obj.property）方法删除属性
+比如：delete(someOBJ.age)
+5。改变属性
+直接obj.property = newvalue即可
+比如：someOBJ.name = "clegay"
+6.查询属性
+使用Object.keys(obj)方法列出所有属性
+比如：Object.keys(someOBJ)
+返回一个所有属性的数组
