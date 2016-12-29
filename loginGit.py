@@ -54,8 +54,8 @@ arraryTolen = re.findall(tokenPattern,loginHtml.text)#得到动态的token,这�
 token = arraryTolen[0]
 print("the token is: ",token)
 
-loginParams = {'login':'hankeboom@163.com',
-               'password':'hanqian1993',
+loginParams = {'login':'*****',
+               'password':'******',
                'authenticity_token':token,
                'commit':'Sign in',
                'utf8': "✓"}#配置登录参数
