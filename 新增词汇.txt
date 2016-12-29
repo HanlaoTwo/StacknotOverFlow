@@ -1,0 +1,40 @@
+agnostic 不可知论者
+demonstrates 演示
+hierarchies 层次结构
+parallels 平行线
+prototypically 典型的
+inherit 继承
+Retrieving 检索
+Propagation 传播
+corresponding 相应的
+registration 登记
+mutation 突变
+implicitly 隐式
+$digest 为消化
+detected 检测
+propagation 传播
+retrieve 检索
+Considerations 注意事项
+magnitude 大小
+Integration 整合
+explicit 明确的
+interpolation 插值
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
