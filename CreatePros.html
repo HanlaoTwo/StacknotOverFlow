@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>严谨开发</title>
+</head>
+
+<body>
+
+
+    <form>
+        <h3>生成bean文件属性</h3>
+        name: <textarea type="text" id="propers" height=500px,width=100%></textarea>
+        <input type="button" value="生成" onclick="getNames()" />
+    </form>
+
+    <form>
+        <h3>生成vm文件queryTable</h3>
+        columns: <input type="text" id="colum" /> names: <input type="text" id="name" />
+        <input type="button" value="生成" onclick="getQueryTable()" />
+    </form>
+
+    <script type="text/javascript">
+        //生成bean文件属性
+        function getNames() {
+            var names = document.getElementById("propers").value;
+            var pros = names.split(" ");
+            for (var i = 0; i < pros.length; i++) {
+                getPros(pros[i]);
+            }
+        }
+
+        function getPros(name) {
+
+            var pro = name.split("_");
+            var begain = pro[0];
+            var end = pro[1];
+            end = end.slice(0, 1).toUpperCase() + end.slice(1);
+            document.write('@HsDbField("' + name + '")<br>');
+            document.write("private String " + begain + end + ";<br>");
+            document.write("<br>");
+        }
+
+        //生成vm文件querytable
+
+        function getQueryTable() {
+
+            document.write(CreateStandered() + createItems());
+        }
+
+        function CreateStandered() {
+            var standered = '#query_table({<br>' +
+                '"title":"",<br>' +
+                '"id":"",<br>' +
+                '"name":"",<br>' +
+                '"url":" ",<br>' +
+                '"request_num":"10",<br>' +
+                '"hasPage":"true",<br>' +
+                '"position_str":"positionStr",<br>' +
+                '"requestMethod":"post",<br>' +
+                '"numbercolumn":"true",<br>' +
+                '"selectModel":"single",<br>' +
+                '"simpleRequest":"true",<br>' +
+                '"bindformname":"queryRefundForm",<br>' +
+                '"autoLoad":"false",<br>' +
+                '"titleButtons":[<br>' +
+                '{"label":"","cls":"edit","event":""},<br>' +
+                '{"label":"","cls":"del","event":""}],<br>' +
+                '"items":[<br>';
+            return standered;
+        }
+        //生成items
+        function createItems() {
+            var Items;
+            var columns = document.getElementById("colum").value;
+            var columArray = columns.split(" ");
+            var names = document.getElementById("name").value;
+            var nameArray = names.split(" ");
+            for (var i = 0; i < nameArray.length; i++) {
+                Items = Items + getItem(columArray[i], nameArray[i]);
+            }
+            return Items;
+        }
+
+        function getItem(item, text) {
+            var items = item.split("_");
+            var begain = items[0];
+            var end = items[1];
+            end = end.slice(0, 1).toUpperCase() + end.slice(1);
+            var itemstr = '{"name":"' + begain + end + '", "text":"' + text + '"},<br>';
+            return itemstr;
+        }
+    </script>
+
+</body>
+
+</html>
