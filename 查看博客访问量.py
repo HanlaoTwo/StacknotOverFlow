@@ -40,7 +40,7 @@ patten2 = re.compile(rule2,re.S)
 #步骤4
 tileArray = re.findall(patten2,html.text)
 timeArray = re.findall(patten1,html.text)
-#步骤5
+#步骤5x
 i = 0
 for tile in tileArray:
     print(tile+": "+timeArray[i])
