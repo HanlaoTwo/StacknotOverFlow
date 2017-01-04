@@ -1,0 +1,230 @@
+
+
+scope的特点
+1.scope提供监视模型的变化的API（$watch）
+2.scope通过系统从外部的angualr组件到视图的传播模型变化（$apply）
+3.socpe可以嵌套，在提供模型属性获取的同时限制获取权限.嵌套的scope可以是字scope或者隔离scope
+4.scope提供表达式的作用域，比如{{username}}是没有意义的如果scope中没有定义
+
+scope作为数据模型
+scope是控制器和视图之间的桥梁，在模板连接阶段，指令添加$watch表达式到scope。$watch让指令知道属性的变化从而更新DOM
+
+scope的层次结构
+    每个angualr app都只有一个root scope但是可能会有很多子scope，子scope会继承父scope的属性
+    一个app会有很多scope，因为一些指令会创建新的子scope,一个子scope被创建之后就会被添加到他的符scope，这就在他们所在的DOM中创建了一个树结构。
+当angualr解析一个{{name}}表达式的时候，会首先从它所绑定的scope中去找模型，如果找不到就会到它的父级scope中找一直到根scope
+<div class="show-scope-demo">
+  <div ng-controller="GreetController">
+    Hello {{name}}!
+  </div>
+  <div ng-controller="ListController">
+    <ol>
+      <li ng-repeat="name in names">{{name}} from {{department}}</li>
+    </ol>
+  </div>
+</div>
+angular.module('scopeExample', [])
+.controller('GreetController', ['$scope', '$rootScope', function($scope, $rootScope) {
+  $scope.name = 'World';
+  $rootScope.department = 'Angular';
+}])
+.controller('ListController', ['$scope', function($scope) {
+  $scope.names = ['Igor', 'Misko', 'Vojta'];
+}]);
+Hello World!
+Igor from Angular
+Misko from Angular
+Vojta from Angular
+在DOM中搜索scope
+1.选中页面中的一个组件，右键审查元素
+2.在控制台中输入$0,可以返回当前的scope
+3.为了找到相关的scope,控制台中输入angular.element($0).scope()或者直接输入$scope
+
+scope时间传播
+和DOM事件类似，cope的事件可以广播 broadcasted到子scope或者向上传递  emitted 到父级scope
+一个栗子：
+angular.module('eventExample', [])
+.controller('EventController', ['$scope', function($scope) {
+  $scope.count = 0;
+  $scope.$on('MyEvent', function() {
+    $scope.count++;
+  });
+}]);
+<div ng-controller="EventController">
+  Root scope <tt>MyEvent</tt> count: {{count}}
+  <ul>
+    <li ng-repeat="i in [1]" ng-controller="EventController">
+      <button ng-click="$emit('MyEvent')">$emit('MyEvent')</button>
+      <button ng-click="$broadcast('MyEvent')">$broadcast('MyEvent')</button>
+      <br>
+      Middle scope <tt>MyEvent</tt> count: {{count}}
+      <ul>
+        <li ng-repeat="item in [1, 2]" ng-controller="EventController">
+          Leaf scope <tt>MyEvent</tt> count: {{count}}
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+scope的生命周期
+一般的流程是浏览器收到一个来自JavaScript的回调，当回调结束后浏览器会重新渲染DOM然后等待新得事件
+在执行完一个表达式后，$apply方法会触发$digest。在digest阶段，scope检查所有的$watch表达式并和之前的值比较。这个脏数据检查是异步的，就是说当一个model发生变化时不会马上触发$watch的监控，当一个$watch监测到变化时，会强迫进入$digest循环
+生命周期
+1.创建（Creation）
+rootscope在app引导生成的时候被$injector创建
+在模板链接阶段一些机灵会创建子scope
+2.监测器初始化（Watcher registratio）
+在模板链接阶段，指令会初始化watch项到scope中。这些watch项会传播model的值到DOM中
+3.模型变化（Model mutation）
+4.变化监测（Mutation observation）
+在$apply结束时，angualr开始$digest循环。所有的$watch表达式或者监测变化的函数会被检查如果产生了变化$watch的监听器会触发
+5.scope销毁（Scope destruction）
+当子scope不在需要的时候，他们的创建者会调用angualr的api（ scope.$destroy()）销毁他们，然后释放内存等。
+
+$scope $watch操作的注意事项
+scope属性的脏数据检查是一个很普遍的操作，所以脏数据检查功能必须是高效的。需要注意的事脏数据检查不会做任何的DOM变化检查因为DOM的获取要比JavaScript对象的属性获取慢的多
+
+scope $watch的深度
+脏数据检查可以通过三种策略实现：
+监测引用（）
+监测集合的内容
+监测值
+Dirty checking
+$apply has already been called for you by the directive which is handling the event.
+An explicit call to $apply is needed only when implementing custom event callbacks, or when working with third-party library callbacks.
+
+git webFlow
+1.发送数据到github
+2.git重定向到原来的网址，并携带步骤1中的参数。
+
+scope的特点
+1.scope提供监视模型的变化的API（$watch）
+2.scope通过系统从外部的angualr组件到视图的传播模型变化（$apply）
+3.socpe可以嵌套，在提供模型属性获取的同时限制获取权限.嵌套的scope可以是字scope或者隔离scope
+4.scope提供表达式的作用域，比如{{username}}是没有意义的如果scope中没有定义
+
+scope作为数据模型
+scope是控制器和视图之间的桥梁，在模板连接阶段，指令添加$watch表达式到scope。$watch让指令知道属性的变化从而更新DOM
+
+scope的层次结构
+    每个angualr app都只有一个root scope但是可能会有很多子scope，子scope会继承父scope的属性
+    一个app会有很多scope，因为一些指令会创建新的子scope,一个子scope被创建之后就会被添加到他的符scope，这就在他们所在的DOM中创建了一个树结构。
+当angualr解析一个{{name}}表达式的时候，会首先从它所绑定的scope中去找模型，如果找不到就会到它的父级scope中找一直到根scope
+<div class="show-scope-demo">
+  <div ng-controller="GreetController">
+    Hello {{name}}!
+  </div>
+  <div ng-controller="ListController">
+    <ol>
+      <li ng-repeat="name in names">{{name}} from {{department}}</li>
+    </ol>
+  </div>
+</div>
+angular.module('scopeExample', [])
+.controller('GreetController', ['$scope', '$rootScope', function($scope, $rootScope) {
+  $scope.name = 'World';
+  $rootScope.department = 'Angular';
+}])
+.controller('ListController', ['$scope', function($scope) {
+  $scope.names = ['Igor', 'Misko', 'Vojta'];
+}]);
+Hello World!
+Igor from Angular
+Misko from Angular
+Vojta from Angular
+在DOM中搜索scope
+1.选中页面中的一个组件，右键审查元素
+2.在控制台中输入$0,可以返回当前的scope
+3.为了找到相关的scope,控制台中输入angular.element($0).scope()或者直接输入$scope
+
+scope时间传播
+和DOM事件类似，cope的事件可以广播 broadcasted到子scope或者向上传递  emitted 到父级scope
+一个栗子：
+angular.module('eventExample', [])
+.controller('EventController', ['$scope', function($scope) {
+  $scope.count = 0;
+  $scope.$on('MyEvent', function() {
+    $scope.count++;
+  });
+}]);
+<div ng-controller="EventController">
+  Root scope <tt>MyEvent</tt> count: {{count}}
+  <ul>
+    <li ng-repeat="i in [1]" ng-controller="EventController">
+      <button ng-click="$emit('MyEvent')">$emit('MyEvent')</button>
+      <button ng-click="$broadcast('MyEvent')">$broadcast('MyEvent')</button>
+      <br>
+      Middle scope <tt>MyEvent</tt> count: {{count}}
+      <ul>
+        <li ng-repeat="item in [1, 2]" ng-controller="EventController">
+          Leaf scope <tt>MyEvent</tt> count: {{count}}
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+scope的生命周期
+一般的流程是浏览器收到一个来自JavaScript的回调，当回调结束后浏览器会重新渲染DOM然后等待新得事件
+在执行完一个表达式后，$apply方法会触发$digest。在digest阶段，scope检查所有的$watch表达式并和之前的值比较。这个脏数据检查是异步的，就是说当一个model发生变化时不会马上触发$watch的监控，当一个$watch监测到变化时，会强迫进入$digest循环
+生命周期
+1.创建（Creation）
+rootscope在app引导生成的时候被$injector创建
+在模板链接阶段一些机灵会创建子scope
+2.监测器初始化（Watcher registratio）
+在模板链接阶段，指令会初始化watch项到scope中。这些watch项会传播model的值到DOM中
+3.模型变化（Model mutation）
+4.变化监测（Mutation observation）
+在$apply结束时，angualr开始$digest循环。所有的$watch表达式或者监测变化的函数会被检查如果产生了变化$watch的监听器会触发
+5.scope销毁（Scope destruction）
+当子scope不在需要的时候，他们的创建者会调用angualr的api（ scope.$destroy()）销毁他们，然后释放内存等。
+
+$scope $watch操作的注意事项
+scope属性的脏数据检查是一个很普遍的操作，所以脏数据检查功能必须是高效的。需要注意的事脏数据检查不会做任何的DOM变化检查因为DOM的获取要比JavaScript对象的属性获取慢的多
+
+scope $watch的深度
+脏数据检查可以通过三种策略实现：
+监测引用（reference）
+监测集合的内容（collection contents）
+监测值（value）
+三种监测范围或者叫能力如图
+https://docs.angularjs.org/img/guide/concepts-scope-watch-strategies.png
+
+
+在浏览器事件循环中的整个过程；；；
+如图：
+https://docs.angularjs.org/img/guide/concepts-runtime.png
+1.浏览器事件循环等待事件的到达，事件可以是用户操作、定时器事件或者网络事件
+2.事件回调步骤执行，然后进入JavaScript的范围，回调步骤可以更新DOM结构
+3.当回调步骤执行后，浏览器会离开JavaScript范围然后重新渲染基于DOM变化的视图
+
+一个HelloWorld的栗子：
+<div ng-app="demo">
+    <input ng-model="name">
+</div>
+<script>
+angular.module('demo', [])
+       .controller('democtrl', ['$scope', function($scope) {
+           $scope.name = "hello world";
+                 }]);
+</script>
+1.在编译阶段：
+   1.ng-model和输入框指令设置一个keydowm监听器在<input>中
+   2.差值（interpolation）添加$watch来监听“name”值得变化
+2.在运行时阶段：
+   1.当在输入框中输入时会触发keydown事件
+   2.input输入框捕捉到它值得变化然后调用$apply（“name = '输入内容'”），然后在angualr的内部更新app的模型
+   3.angualr把“name = '输入内容'”应用到模型上
+   4.$digest循环开始
+   5.$watch队列返现'name'属性的变化然后通知内部结构（ interpolation）按顺序更新DOM
+   6.angualr退出执行范围，也就是按顺序退出JavaScript范围中的kedown事件
+   7.浏览器用更新过的输入框内容重新渲染视图
+
+
+
+
+
+
+
+一个栗子：
